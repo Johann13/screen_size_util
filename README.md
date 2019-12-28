@@ -1,6 +1,6 @@
 # screen_size_util
 
-A new Flutter project.
+Flutter widget for responsive layouts and extension widget to MediaQueryData.
 
 ## Getting Started
 
