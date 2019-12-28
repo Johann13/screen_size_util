@@ -1,6 +1,6 @@
 # screen_size_util
 
-Flutter widget for responsive layouts and extension widget to MediaQueryData.
+Flutter widget for responsive layouts and extensions to [MediaQueryData](https://api.flutter.dev/flutter/widgets/MediaQueryData-class.html).
 
 ## Getting Started
 
