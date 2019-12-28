@@ -1,5 +1,5 @@
 name: screen_size_util
-description: A new Flutter project.
+description: Flutter widget for responsive layouts and extension widget to MediaQueryData.
 version: 0.0.1
 author:
 homepage:
