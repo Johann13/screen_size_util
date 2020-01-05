@@ -8,6 +8,7 @@ class ResponsiveBuilder extends StatelessWidget {
   final WidgetBuilder medium;
   final WidgetBuilder small;
   final WidgetBuilder extraSmall;
+  final List<CustomBreak> breaks;
 
   const ResponsiveBuilder({
     Key key,
@@ -16,11 +17,21 @@ class ResponsiveBuilder extends StatelessWidget {
     this.medium,
     this.small,
     @required this.extraSmall,
+    this.breaks,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     MediaQueryData data = MediaQuery.of(context);
+
+    if (breaks != null && breaks.isNotEmpty) {
+      for (CustomBreak b in breaks) {
+        if (data.satisfiesWidth(b.min, max: b.max)) {
+          return b.builder(context);
+        }
+      }
+    }
+
     if (data.isExtraLarge && extraLarge != null) {
       return extraLarge(context);
     } else if (data.isLarge && large != null) {
@@ -39,33 +50,36 @@ extension SimpleMediaQueryData on MediaQueryData {
 
   double get width => this.size.width;
 
-  bool get isExtraSmall => width < 576;
+  bool get isExtraSmall => satisfiesWidth(0, max: 576);
 
-  bool get isSmall => width >= 576; //width < 768;
+  bool get isSmall => satisfiesWidth(576); //width < 768;
 
-  bool get isMedium => width >= 768; //width < 992;
+  bool get isMedium => satisfiesWidth(768); //width < 992;
 
-  bool get isLarge => width >= 992; //width < 1200;
+  bool get isLarge => satisfiesWidth(992); //width < 1200;
 
-  bool get isExtraLarge => width >= 1200;
+  bool get isExtraLarge => satisfiesWidth(1200);
 
-  bool get isBigPhone {
-    if (isPortrait) {
-      return width >= 400;
-    }
-    return height >= 400;
+  bool get isExtraExtraLarge => satisfiesWidth(1600);
+
+  bool satisfiesWidth(double min, {double max = double.maxFinite}) {
+    return (isLandscape ? this.width : height) >= min &&
+        (isLandscape ? this.width : height) < max;
   }
-
-  bool get isSmallPhone {
-    if (isPortrait) {
-      return width <= 350;
-    }
-    return height <= 350;
-  }
-
-  bool get isMiddlePhone => !isBigPhone && !isSmallPhone;
 
   bool get isPortrait => orientation == Orientation.portrait;
 
   bool get isLandscape => !isPortrait;
+}
+
+class CustomBreak {
+  final double min;
+  final double max;
+  final WidgetBuilder builder;
+
+  CustomBreak({
+    @required this.min,
+    this.max = double.maxFinite,
+    @required this.builder,
+  });
 }
